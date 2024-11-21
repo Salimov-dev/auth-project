@@ -1,0 +1,17 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@interfaces": ["src/interfaces"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@pages": ["src/components/pages"],
+      "@pages/*": ["src/components/pages/*"],
+      "@UI": ["src/components/UI"],
+      "@UI/*": ["src/components/UI/*"],
+      "@forms": ["src/forms"],
+      "@forms/*": ["src/forms/*"]
+    },
+    "jsx": "react-jsx"
+  }
+}
