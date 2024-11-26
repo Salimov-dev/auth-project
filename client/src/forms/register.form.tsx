@@ -1,10 +1,24 @@
 import { FC } from "react";
 import { Button, Flex, Form, FormProps, Input } from "antd";
 import { RegisterTypes } from "@interfaces/register.interface";
+import axios from "axios";
+
+const http = axios.create({
+  baseURL: "http://localhost:3000/api/",
+  params: {},
+  withCredentials: true
+});
 
 const RegisterForm: FC = (): JSX.Element => {
-  const handleFinish: FormProps<RegisterTypes>["onFinish"] = (values) => {
+  const handleFinish: FormProps<RegisterTypes>["onFinish"] = async (values) => {
     console.log("Success:", values);
+
+    try {
+      const { data } = await http.post("auth/register", values);
+      console.log("data", data);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   return (
