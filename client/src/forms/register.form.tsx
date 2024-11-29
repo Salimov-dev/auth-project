@@ -77,6 +77,14 @@ const RegisterForm: FC = (): JSX.Element => {
         <Input />
       </Form.Item>
 
+      <Form.Item<RegisterTypes>
+        label="Phone"
+        name="phone"
+        rules={[{ required: true, message: "Please input your phone!" }]}
+      >
+        <Input />
+      </Form.Item>
+
       <Form.Item label={null}>
         <Flex justify="center" style={{ marginTop: "30px" }}>
           <Button type="primary" htmlType="submit">
