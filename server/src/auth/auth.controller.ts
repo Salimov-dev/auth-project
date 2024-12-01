@@ -8,9 +8,7 @@ export class AuthController {
 
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
-    console.log('registerDto', registerDto);
-
-    return 'register';
+    return this.authService.register(registerDto);
   }
 
   @Post('login')
