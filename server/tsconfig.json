@@ -23,7 +23,9 @@
       "@auth": ["src/auth"],
       "@auth/*": ["src/auth/*"],
       "@config": ["config"],
-      "@config/*": ["config/*"]
+      "@config/*": ["config/*"],
+      "@user": ["src/user"],
+      "@user/*": ["src/user/*"]
     }
   }
 }
