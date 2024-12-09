@@ -3,7 +3,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import AuthButtonHeader from "./components/auth-button.header";
 import { Segment } from "@interfaces/auth.interface";
-import AuthPage from "@pages/auth-page";
+import AuthPage from "@pages/auth.page";
 
 const Component = styled(Layout.Header)`
   text-align: center;
@@ -19,10 +19,6 @@ const Header = () => {
   const [segment, setSegment] = useState<Segment>("login");
 
   const handleChangeSegment = (value: Segment) => {
-    if (!value) {
-      return;
-    }
-
     setSegment(value);
   };
 

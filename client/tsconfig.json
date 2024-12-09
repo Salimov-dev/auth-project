@@ -10,7 +10,11 @@
       "@UI": ["src/components/UI"],
       "@UI/*": ["src/components/UI/*"],
       "@forms": ["src/forms"],
-      "@forms/*": ["src/forms/*"]
+      "@forms/*": ["src/forms/*"],
+      "@services": ["src/services"],
+      "@services/*": ["src/services/*"],
+      "@utils": ["src/utils"],
+      "@utils/*": ["src/utils/*"]
     },
     "jsx": "react-jsx"
   }

@@ -14,7 +14,9 @@ export default defineConfig({
       "@interfaces": path.resolve(__dirname, "./src/interfaces"),
       "@pages": path.resolve(__dirname, "./src/components/pages"),
       "@UI": path.resolve(__dirname, "./src/components/UI"),
-      "@forms": path.resolve(__dirname, "./src/forms")
+      "@forms": path.resolve(__dirname, "./src/forms"),
+      "@services": path.resolve(__dirname, "./src/services"),
+      "@utils": path.resolve(__dirname, "./src/utils")
     }
   }
 });

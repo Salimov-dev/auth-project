@@ -25,7 +25,9 @@
       "@config": ["config"],
       "@config/*": ["config/*"],
       "@user": ["src/user"],
-      "@user/*": ["src/user/*"]
+      "@user/*": ["src/user/*"],
+      "@decorators": ["decorators"],
+      "@decorators/*": ["decorators/*"]
     }
   }
 }

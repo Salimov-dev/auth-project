@@ -1,10 +1,14 @@
 import { FC } from "react";
-import type { FormProps } from "antd";
+import type { FormInstance, FormProps } from "antd";
 import { Button, Flex, Form, Input } from "antd";
-import { LoginTypes } from "@interfaces/login.interface";
+import { ILogin } from "@interfaces/auth.interface";
 
-const LoginForm: FC = (): JSX.Element => {
-  const handleFinish: FormProps<LoginTypes>["onFinish"] = (values) => {
+interface IProps {
+  form: FormInstance;
+}
+
+const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
+  const handleFinish: FormProps<ILogin>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
 
@@ -16,7 +20,7 @@ const LoginForm: FC = (): JSX.Element => {
       autoComplete="off"
       style={{ margin: "20px 0 10px 0" }}
     >
-      <Form.Item<LoginTypes>
+      <Form.Item<ILogin>
         label="Username"
         name="username"
         rules={[{ required: true, message: "Please input your username!" }]}
@@ -24,7 +28,7 @@ const LoginForm: FC = (): JSX.Element => {
         <Input />
       </Form.Item>
 
-      <Form.Item<LoginTypes>
+      <Form.Item<ILogin>
         label="Password"
         name="password"
         rules={[{ required: true, message: "Please input your password!" }]}

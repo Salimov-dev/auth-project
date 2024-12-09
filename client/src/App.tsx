@@ -1,9 +1,9 @@
 import { Layout } from "antd";
 import "./styles/reset.css";
 import styled from "styled-components";
-import Header from "./components/UI/header/header";
-import Content from "./components/UI/content/content";
-import Footer from "./components/UI/footer/footer";
+import Header from "@UI/header/header";
+import Content from "@UI/content/content";
+import Footer from "@UI/footer/footer";
 
 const Component = styled(Layout)`
   width: 100%;
