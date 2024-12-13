@@ -75,7 +75,6 @@ export class UserService {
         if (!foundedUser) {
           return null;
         }
-        delete foundedUser.password;
 
         return foundedUser;
       })
@@ -94,7 +93,6 @@ export class UserService {
         if (!foundedUser) {
           return null;
         }
-        delete foundedUser.password;
 
         return foundedUser;
       })
@@ -113,7 +111,6 @@ export class UserService {
         if (!foundedUser) {
           return null;
         }
-        delete foundedUser.password;
 
         return foundedUser;
       })

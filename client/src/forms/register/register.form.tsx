@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { Form, FormInstance, FormProps, Input } from "antd";
-import SubmitButtonRegisterForm from "./components/submit-button.register-form";
 import { http } from "@services/http.service";
 import { regexPatterns } from "@utils/regex/regex.utils";
 import { handleHttpError } from "@utils/errors/handle-http.error";
 import { IRegister } from "@interfaces/auth.interface";
+import SubmitButtonForm from "@common/buttons/submit-button.form";
 
 interface IProps {
   form: FormInstance;
@@ -13,6 +13,8 @@ interface IProps {
 const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
   const handleFinish: FormProps<IRegister>["onFinish"] = async (values) => {
     try {
+      console.log("values", values);
+
       await http.post("auth/register", values);
     } catch (error: unknown) {
       handleHttpError(error, "Ошибка регистрации");
@@ -40,7 +42,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
           }
         ]}
       >
-        <Input />
+        <Input autoComplete="username" />
       </Form.Item>
 
       <Form.Item<IRegister>
@@ -59,7 +61,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
           }
         ]}
       >
-        <Input.Password />
+        <Input.Password autoComplete="current-password" />
       </Form.Item>
 
       <Form.Item<IRegister>
@@ -75,20 +77,20 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
             pattern: regexPatterns.PASSWORD,
             message:
               "Повторный пароль должен содержать цифры, заглавные и строчные буквы, а также специальные символы"
-          },
-          {
-            validator(_, value) {
-              const password = form.getFieldValue("password");
-              if (!value || password !== value) {
-                return Promise.reject(
-                  new Error("Введенные пароли не совпадают!")
-                );
-              }
-            }
           }
+          // {
+          //   validator(_, value) {
+          //     const password = form.getFieldValue("password");
+          //     if (!value || password !== value) {
+          //       return Promise.reject(
+          //         new Error("Введенные пароли не совпадают!")
+          //       );
+          //     }
+          //   }
+          // }
         ]}
       >
-        <Input.Password />
+        <Input.Password autoComplete="new-password" />
       </Form.Item>
 
       <Form.Item<IRegister>
@@ -150,7 +152,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
         <Input />
       </Form.Item>
 
-      <SubmitButtonRegisterForm />
+      <SubmitButtonForm />
     </Form>
   );
 };

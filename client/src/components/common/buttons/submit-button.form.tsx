@@ -1,5 +1,10 @@
 import { Button, Flex, Form } from "antd";
+import { FC } from "react";
 import styled from "styled-components";
+
+interface IProps {
+  submitText?: string;
+}
 
 const Component = styled(Flex)`
   display: flex;
@@ -7,16 +12,18 @@ const Component = styled(Flex)`
   margin-top: 30px;
 `;
 
-const SubmitButtonRegisterForm = () => {
+const SubmitButtonForm: FC<IProps> = ({
+  submitText = "Отправить"
+}): JSX.Element => {
   return (
     <Form.Item label={null}>
       <Component>
         <Button type="primary" htmlType="submit">
-          Отправить
+          {submitText}
         </Button>
       </Component>
     </Form.Item>
   );
 };
 
-export default SubmitButtonRegisterForm;
+export default SubmitButtonForm;

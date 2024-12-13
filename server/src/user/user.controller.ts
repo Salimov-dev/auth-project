@@ -10,6 +10,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -31,18 +32,24 @@ export class UserController {
   }
 
   @Get('find-by-username/:username')
-  findByUsername(@Param('username') username: string) {
-    return this.userService.findByUsername(username);
+  async findByUsername(@Param('username') username: string) {
+    const user: User = await this.userService.findByUsername(username);
+    delete user.password;
+    return user;
   }
 
   @Get('find-by-email/:email')
-  findByEmail(@Param('email') email: string) {
-    return this.userService.findByEmail(email);
+  async findByEmail(@Param('email') email: string) {
+    const user: User = await this.userService.findByEmail(email);
+    delete user.password;
+    return user;
   }
 
   @Get('find-by-phone/:phone')
-  findByPhone(@Param('phone') phone: string) {
-    return this.userService.findByPhone(phone);
+  async findByPhone(@Param('phone') phone: string) {
+    const user: User = await this.userService.findByPhone(phone);
+    delete user.password;
+    return user;
   }
 
   @Patch(':id')

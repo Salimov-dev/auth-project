@@ -1,19 +1,31 @@
 import { FC } from "react";
 import type { FormInstance, FormProps } from "antd";
-import { Button, Flex, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import { ILogin } from "@interfaces/auth.interface";
+import SubmitButtonForm from "@common/buttons/submit-button.form";
+import { http } from "@services/http.service";
+import { handleHttpError } from "@utils/errors/handle-http.error";
 
 interface IProps {
   form: FormInstance;
 }
 
 const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
-  const handleFinish: FormProps<ILogin>["onFinish"] = (values) => {
-    console.log("Success:", values);
+  const handleFinish: FormProps<ILogin>["onFinish"] = async (values) => {
+    try {
+      console.log("values", values);
+
+      await http.post("auth/login", values);
+    } catch (error: unknown) {
+      console.log("error", error);
+
+      handleHttpError(error, "Ошибка при попытке входа");
+    }
   };
 
   return (
     <Form
+      form={form}
       name="login"
       initialValues={{ remember: true }}
       onFinish={handleFinish}
@@ -23,26 +35,20 @@ const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
       <Form.Item<ILogin>
         label="Username"
         name="username"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: "Введите свой псевдоним!" }]}
       >
-        <Input />
+        <Input autoComplete="username" />
       </Form.Item>
 
       <Form.Item<ILogin>
         label="Password"
         name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
+        rules={[{ required: true, message: "Введите пароль!" }]}
       >
-        <Input.Password />
+        <Input.Password autoComplete="current-password" />
       </Form.Item>
 
-      <Form.Item label={null}>
-        <Flex justify="center" style={{ marginTop: "30px" }}>
-          <Button type="primary" htmlType="submit">
-            Войти
-          </Button>
-        </Flex>
-      </Form.Item>
+      <SubmitButtonForm submitText="Войти" />
     </Form>
   );
 };
