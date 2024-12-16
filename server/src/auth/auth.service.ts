@@ -4,11 +4,19 @@ import { UserService } from '@user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { compareSync } from 'bcrypt';
 import { User } from '@prisma/client';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from '@prisma/prisma.service';
+import { v4 } from 'uuid';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(UserService.name);
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService
+  ) {}
 
   register(registerDto: RegisterDto) {
     const createUserDto = registerDto;
@@ -22,7 +30,6 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { username, password } = loginDto;
 
-    // Идентификацию пользователя - проверим username на наличие
     const user: User = await this.userService
       .findByUsername(username)
       .catch((err) => {
@@ -30,22 +37,39 @@ export class AuthService {
         return null;
       });
 
-    if (!user) {
+    const isPasswordMatch = user && compareSync(password, user?.password);
+
+    if (!user || !isPasswordMatch) {
       const textError = 'Неверные логин или пароль';
       this.logger.error(textError);
       throw new UnauthorizedException(textError);
     }
 
-    const isPasswordMatch = compareSync(password, user?.password);
+    const accessToken = this.jwtService.sign({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    });
 
-    // Аутентификацию - проверим пароль верный ли
-    if (!isPasswordMatch) {
-      const textError = 'Неверные логин или пароль';
-      this.logger.error(textError);
-      throw new UnauthorizedException(textError);
-    }
+    const refreshToken = await this.getRefreshToken(user.id);
 
-    // Авторизация
-    return user;
+    const result = { accessToken, refreshToken };
+
+    return result;
   }
+
+  private getRefreshToken = async (userId: string) => {
+    const currentDate = dayjs();
+
+    const expireDate = currentDate.add(1, 'month').toDate();
+
+    return await this.prismaService.token.create({
+      data: {
+        token: v4(),
+        exp: expireDate,
+        userId,
+      },
+    });
+  };
 }
