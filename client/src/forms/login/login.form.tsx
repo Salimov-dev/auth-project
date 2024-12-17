@@ -3,24 +3,32 @@ import type { FormInstance, FormProps } from "antd";
 import { Form, Input } from "antd";
 import { ILogin } from "@interfaces/auth.interface";
 import SubmitButtonForm from "@common/buttons/submit-button.form";
-import { http } from "@services/http.service";
+import { httpService } from "@services/http.service";
 import { handleHttpError } from "@utils/errors/handle-http.error";
+import { jwtDecode } from "jwt-decode";
 
 interface IProps {
   form: FormInstance;
 }
 
 const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
-  const handleFinish: FormProps<ILogin>["onFinish"] = async (values) => {
-    try {
-      console.log("values", values);
+  const handleFinish: FormProps<ILogin>["onFinish"] = (values) => {
+    httpService
+      .post("auth/login", values)
+      .then(({ data }) => {
+        const accessToken: string = data.accessToken;
 
-      await http.post("auth/login", values);
-    } catch (error: unknown) {
-      console.log("error", error);
+        if (!accessToken) {
+          throw new Error("Токены не найдены");
+        }
 
-      handleHttpError(error, "Ошибка при попытке входа");
-    }
+        localStorage.setItem("token", accessToken);
+        const decodedToken = jwtDecode(accessToken);
+        console.log("decodedToken", decodedToken);
+      })
+      .catch((error: unknown) => {
+        handleHttpError(error, "Ошибка при попытке входа");
+      });
   };
 
   return (

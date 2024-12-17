@@ -1,3 +1,4 @@
+import { Token } from './../../node_modules/.prisma/client/index.d';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from '@user/user.service';
@@ -8,14 +9,16 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@prisma/prisma.service';
 import { v4 } from 'uuid';
 import * as dayjs from 'dayjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(UserService.name);
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService
   ) {}
 
   register(registerDto: RegisterDto) {
@@ -52,17 +55,21 @@ export class AuthService {
       role: user.role,
     });
 
-    const refreshToken = await this.getRefreshToken(user.id);
+    const refreshToken: Token = await this.getRefreshToken(user.id);
+    const tokens = { accessToken, refreshToken };
 
-    const result = { accessToken, refreshToken };
-
-    return result;
+    return tokens;
   }
 
   private getRefreshToken = async (userId: string) => {
     const currentDate = dayjs();
 
-    const expireDate = currentDate.add(1, 'month').toDate();
+    const expirationUnit = this.configService.get('TOKEN_EXPIRATION_UNIT');
+    const expirationValue = this.configService.get('TOKEN_EXPIRATION_VALUE');
+
+    const expireDate = currentDate
+      .add(expirationValue, expirationUnit)
+      .toDate();
 
     return await this.prismaService.token.create({
       data: {
