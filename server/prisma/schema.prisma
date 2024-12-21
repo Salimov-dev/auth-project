@@ -37,8 +37,3 @@ model Token {
 
   @@map("tokens")
 }
-
-enum Role {
-  ADMIN
-  USER
-}

@@ -62,8 +62,22 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findById(id: string) {
+    return this.prismaService.user
+      .findUnique({
+        where: { id },
+      })
+      .then((foundedUser) => {
+        if (!foundedUser) {
+          return null;
+        }
+
+        return foundedUser;
+      })
+      .catch((err) => {
+        this.logger.error('Ошибка при поиске пользователя по ID', err);
+        throw new NotFoundException('Пользователь по ID не найден');
+      });
   }
 
   async findByUsername(username: string) {

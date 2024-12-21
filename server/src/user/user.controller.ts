@@ -27,8 +27,8 @@ export class UserController {
   }
 
   @Get('find-one/:id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findById(@Param('id') id: string) {
+    return this.userService.findById(id);
   }
 
   @Get('find-by-username/:username')
