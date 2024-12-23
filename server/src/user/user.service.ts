@@ -59,7 +59,7 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.prismaService.user.findMany();
   }
 
   async findById(id: string) {
@@ -139,12 +139,24 @@ export class UserService {
       });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    return this.prismaService.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    return this.prismaService.user
+      .delete({
+        where: { id },
+      })
+      .then((deletedUser) => {
+        return { message: 'Пользователь успешно удален', deletedUser };
+      })
+      .catch((err) => {
+        throw new Error(`Ошибка при удалении пользователя ${err.message}`);
+      });
   }
 
   private hashPassword(password: string) {
