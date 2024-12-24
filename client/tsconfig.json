@@ -16,8 +16,12 @@
       "@utils": ["src/utils"],
       "@utils/*": ["src/utils/*"],
       "@common": ["src/components/common"],
-      "@common/*": ["src/components/common/*"]
+      "@common/*": ["src/components/common/*"],
+      "@config": ["src/config"],
+      "@config/*": ["src/config/*"]
     },
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

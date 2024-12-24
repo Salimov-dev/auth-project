@@ -1,7 +1,7 @@
 import { Role } from '@prisma/client';
 
 export interface IAccessToken {
-  id: string;
+  userId: string;
   username: string;
   email: string;
   role: Role[];
