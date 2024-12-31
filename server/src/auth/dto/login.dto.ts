@@ -4,6 +4,6 @@ export class LoginDto {
   @IsString({ message: 'Пароль должен быть строкой' })
   password: string;
 
-  @IsString({ message: 'Псевдоним должен быть строкой' })
-  username: string;
+  @IsString({ message: 'Имя пользователя должно быть строкой' })
+  userName: string;
 }

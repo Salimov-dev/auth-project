@@ -18,7 +18,9 @@
       "@common": ["src/components/common"],
       "@common/*": ["src/components/common/*"],
       "@config": ["src/config"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@store": ["src/store"],
+      "@store/*": ["src/store/*"]
     },
     "jsx": "react-jsx",
     "resolveJsonModule": true,

@@ -27,7 +27,9 @@
       "@user": ["src/user"],
       "@user/*": ["src/user/*"],
       "@decorators": ["decorators"],
-      "@decorators/*": ["decorators/*"]
+      "@decorators/*": ["decorators/*"],
+      "@token": ["src/token"],
+      "@token/*": ["src/token/*"]
     }
   }
 }

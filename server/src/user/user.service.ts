@@ -21,7 +21,7 @@ export class UserService {
     const userData = { ...createUserDto, password: hashedPassword };
 
     const existingUserByUsername = await this.findByUsername(
-      createUserDto.username
+      createUserDto.userName
     );
     if (existingUserByUsername) {
       const message = 'Пользователь с таким псевдонимом уже существует';
@@ -80,10 +80,10 @@ export class UserService {
       });
   }
 
-  async findByUsername(username: string) {
+  async findByUsername(userName: string) {
     return this.prismaService.user
       .findUnique({
-        where: { username },
+        where: { userName },
       })
       .then((foundedUser) => {
         if (!foundedUser) {

@@ -1,7 +1,9 @@
+import { Role } from "./user.interface";
+
 export type Segment = "login" | "register";
 
 export interface ILogin {
-  username: string;
+  userName: string;
   password: string;
 }
 
@@ -11,4 +13,13 @@ export interface IRegister extends ILogin {
   lastName: string;
   email: string;
   phone: string;
+}
+
+export interface IAccessDecodedToken {
+  userId: string;
+  userName: string;
+  email: string;
+  role: Role[];
+  exp: number;
+  iat: number;
 }

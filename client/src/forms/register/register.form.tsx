@@ -1,24 +1,21 @@
 import { FC } from "react";
 import { Form, FormInstance, FormProps, Input } from "antd";
-import { httpService } from "@services/http.service";
 import { regexPatterns } from "@utils/regex/regex.utils";
-import { handleHttpError } from "@utils/errors/handle-http.error";
 import { IRegister } from "@interfaces/auth.interface";
 import SubmitButtonForm from "@common/buttons/submit-button.form";
+import useAuthStore from "@store/auth.store";
 
 interface IProps {
   form: FormInstance;
 }
 
 const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
-  const handleFinish: FormProps<IRegister>["onFinish"] = async (values) => {
-    try {
-      console.log("values", values);
+  const { register } = useAuthStore();
 
-      await httpService.post("auth/register", values);
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка регистрации");
-    }
+  const handleFinish: FormProps<IRegister>["onFinish"] = async (
+    registerData
+  ) => {
+    register(registerData);
   };
 
   return (
@@ -31,18 +28,18 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       style={{ margin: "20px 0 10px 0" }}
     >
       <Form.Item<IRegister>
-        label="Username"
-        name="username"
+        label="Имя пользователя"
+        name="userName"
         rules={[
-          { required: true, message: "Введите свой псевдоним!" },
+          { required: true, message: "Введите имя пользователя!" },
           {
             min: 3,
             max: 20,
-            message: "Псевдоним должен быть длинной от 3 до 20 символов"
+            message: "Имя пользователя должно быть длинной от 3 до 20 символов"
           }
         ]}
       >
-        <Input autoComplete="username" />
+        <Input autoComplete="userName" />
       </Form.Item>
 
       <Form.Item<IRegister>
@@ -86,6 +83,8 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
                   new Error("Введенные пароли не совпадают!")
                 );
               }
+
+              return Promise.resolve();
             }
           }
         ]}

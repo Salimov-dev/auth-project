@@ -29,7 +29,7 @@ export class CreateUserDto {
   @Length(2, 20, {
     message: 'Длина псевдонима должна быть от 2 до 20 символов',
   })
-  username: string;
+  userName: string;
 
   @IsString({ message: 'Телефон должен быть строкой' })
   @Length(6, 20, { message: 'Длина телефона должна быть от 6 до 20 символов' })

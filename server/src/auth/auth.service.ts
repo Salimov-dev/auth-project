@@ -1,27 +1,21 @@
-import { Token } from './../../node_modules/.prisma/client/index.d';
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { UserService } from '@user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { compareSync } from 'bcrypt';
 import { User } from '@prisma/client';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@prisma/prisma.service';
-import { v4 } from 'uuid';
-import * as dayjs from 'dayjs';
-import { ConfigService } from '@nestjs/config';
+import { TokenService } from '@token/token.service';
+import { ITokens } from '@token/interfaces/interfaces';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService
+    private readonly tokenService: TokenService
   ) {}
 
-  register(registerDto: RegisterDto) {
+  register(registerDto: RegisterDto): Promise<User> {
     const createUserDto = registerDto;
     delete createUserDto.repeatPassword;
 
@@ -30,11 +24,11 @@ export class AuthService {
     return createdUser;
   }
 
-  async login(loginDto: LoginDto) {
-    const { username, password } = loginDto;
+  async login(loginDto: LoginDto): Promise<ITokens> {
+    const { userName, password } = loginDto;
 
     const user: User = await this.userService
-      .findByUsername(username)
+      .findByUsername(userName)
       .catch((err) => {
         this.logger.error(err);
         return null;
@@ -48,39 +42,6 @@ export class AuthService {
       throw new UnauthorizedException(textError);
     }
 
-    const accessToken = this.jwtService.sign({
-      userId: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    });
-
-    const refreshToken: Token = await this.getRefreshToken(user.id);
-    const tokens = { accessToken, refreshToken };
-
-    return tokens;
+    return this.tokenService.generateTokens(user);
   }
-
-  refreshTokens() {
-    return null;
-  }
-
-  private getRefreshToken = async (userId: string) => {
-    const currentDate = dayjs();
-
-    const expirationUnit = this.configService.get('TOKEN_EXPIRATION_UNIT');
-    const expirationValue = this.configService.get('TOKEN_EXPIRATION_VALUE');
-
-    const expireDate = currentDate
-      .add(expirationValue, expirationUnit)
-      .toDate();
-
-    return await this.prismaService.token.create({
-      data: {
-        token: v4(),
-        expires: expireDate,
-        userId,
-      },
-    });
-  };
 }

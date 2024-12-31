@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Header from "@UI/header/header";
 import Content from "@UI/content/content";
 import Footer from "@UI/footer/footer";
+import useAuthStore from "@store/auth.store";
 
 const Component = styled(Layout)`
   width: 100%;
@@ -11,6 +12,8 @@ const Component = styled(Layout)`
 `;
 
 function App() {
+  console.log("useAuthStore()", useAuthStore());
+
   return (
     <Component>
       <Header />

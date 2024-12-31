@@ -3,32 +3,17 @@ import type { FormInstance, FormProps } from "antd";
 import { Form, Input } from "antd";
 import { ILogin } from "@interfaces/auth.interface";
 import SubmitButtonForm from "@common/buttons/submit-button.form";
-import { httpService } from "@services/http.service";
-import { handleHttpError } from "@utils/errors/handle-http.error";
-import { jwtDecode } from "jwt-decode";
+import useAuthStore from "@store/auth.store";
 
 interface IProps {
   form: FormInstance;
 }
 
 const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
-  const handleFinish: FormProps<ILogin>["onFinish"] = (values) => {
-    httpService
-      .post("auth/login", values)
-      .then(({ data }) => {
-        const accessToken: string = data.accessToken;
+  const { login } = useAuthStore();
 
-        if (!accessToken) {
-          throw new Error("Токены не найдены");
-        }
-
-        localStorage.setItem("token", accessToken);
-        const decodedToken = jwtDecode(accessToken);
-        console.log("decodedToken", decodedToken);
-      })
-      .catch((error: unknown) => {
-        handleHttpError(error, "Ошибка при попытке входа");
-      });
+  const handleFinish: FormProps<ILogin>["onFinish"] = (loginData) => {
+    login(loginData);
   };
 
   return (
@@ -41,11 +26,11 @@ const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
       style={{ margin: "20px 0 10px 0" }}
     >
       <Form.Item<ILogin>
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: "Введите свой псевдоним!" }]}
+        label="Имя пользователя"
+        name="userName"
+        rules={[{ required: true, message: "Введите имя пользователя!" }]}
       >
-        <Input autoComplete="username" />
+        <Input autoComplete="userName" />
       </Form.Item>
 
       <Form.Item<ILogin>

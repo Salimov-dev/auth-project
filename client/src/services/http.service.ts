@@ -1,5 +1,10 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig
+} from "axios";
 import config from "@config/config.json";
+import useTokenStore from "@store/token.store";
 
 export const httpService = axios.create({
   baseURL: config.baseURL,
@@ -20,22 +25,12 @@ httpService.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     if (error.response?.status === 401) {
-      console.log("error.response", error);
-      const cookies = document.cookie;
-      console.log("cookies", cookies);
+      const { refreshTokens } = useTokenStore();
+      refreshTokens(error);
     }
 
     return Promise.reject(error);
   }
 );
-
-httpService
-  .get("/user/find-by-username/Ruslan01")
-  .then((response) => {
-    console.log("Response:", response);
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
