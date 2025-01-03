@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
+  HttpStatus,
   Logger,
   Post,
   Res,
@@ -12,6 +14,12 @@ import { LoginDto } from './dto/login.dto';
 import { Public } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { TokenService } from '@token/token.service';
+import { Cookies } from '@decorators/cookies.decorator';
+import dayjs from 'dayjs';
+import { ConfigService } from '@nestjs/config';
+import { getCookieOptions } from '@utils/cookie-options.util';
+
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 @Public()
 @Controller('auth')
@@ -19,7 +27,8 @@ export class AuthController {
   private readonly logger = new Logger(AuthController.name);
   constructor(
     private readonly authService: AuthService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly configService: ConfigService
   ) {}
 
   @Post('register')
@@ -46,5 +55,24 @@ export class AuthController {
     }
 
     this.tokenService.setRefreshTokenToCookies(tokens, res);
+  }
+
+  @Get('logout')
+  async logout(
+    @Cookies(REFRESH_TOKEN) refreshToken: string,
+    @Res() res: Response
+  ) {
+    if (!refreshToken) {
+      res.sendStatus(HttpStatus.OK);
+      return;
+    }
+
+    this.authService.deleteRefreshToken(refreshToken);
+
+    const refreshTokenName = this.configService.get('REFRESH_TOKEN');
+    const today = dayjs().toDate();
+
+    res.cookie(refreshTokenName, '', getCookieOptions(today));
+    res.sendStatus(HttpStatus.OK);
   }
 }

@@ -1,8 +1,8 @@
 import { Controller, Get, Res, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import { Cookies } from '@decorators/cookies.decorator';
-import { Public } from '@auth/guards/jwt-auth.guard';
 import { TokenService } from './token.service';
+import { Public } from '@auth/guards/jwt-auth.guard';
 
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 

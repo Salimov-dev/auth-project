@@ -7,8 +7,9 @@ import { PrismaService } from '@prisma/prisma.service';
 import { v4 } from 'uuid';
 import * as dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
-import { ICookieOptions, ITokens } from './interfaces/interfaces';
+import { ITokens } from './interfaces/interfaces';
 import { Response } from 'express';
+import { getCookieOptions } from '@utils/cookie-options.util';
 
 @Injectable()
 export class TokenService {
@@ -79,17 +80,10 @@ export class TokenService {
 
     const { token, expires } = tokens.refreshToken;
     const cookieExpDate = dayjs(expires).toDate();
-    const cookieOptions: ICookieOptions = {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
-      path: '/',
-      expires: cookieExpDate,
-    };
 
     const refreshToken = this.configService.get('REFRESH_TOKEN');
 
-    res.cookie(refreshToken, token, cookieOptions);
+    res.cookie(refreshToken, token, getCookieOptions(cookieExpDate));
     res.status(HttpStatus.CREATED).json({ accessToken: tokens.accessToken });
   }
 }

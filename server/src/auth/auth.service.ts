@@ -6,13 +6,15 @@ import { compareSync } from 'bcrypt';
 import { User } from '@prisma/client';
 import { TokenService } from '@token/token.service';
 import { ITokens } from '@token/interfaces/interfaces';
+import { PrismaService } from '@prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly userService: UserService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private readonly prismaService: PrismaService
   ) {}
 
   register(registerDto: RegisterDto): Promise<User> {
@@ -43,5 +45,9 @@ export class AuthService {
     }
 
     return this.tokenService.generateTokens(user);
+  }
+
+  async deleteRefreshToken(refreshToken: string) {
+    await this.prismaService.token.delete({ where: { token: refreshToken } });
   }
 }

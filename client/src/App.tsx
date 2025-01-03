@@ -6,20 +6,20 @@ import Content from "@UI/content/content";
 import Footer from "@UI/footer/footer";
 import useAuthStore from "@store/auth.store";
 
-const Component = styled(Layout)`
+const Application = styled(Layout)`
   width: 100%;
   height: 100vh;
 `;
 
 function App() {
-  console.log("useAuthStore()", useAuthStore());
+  console.log("useAuthStore", useAuthStore());
 
   return (
-    <Component>
+    <Application>
       <Header />
       <Content />
       <Footer />
-    </Component>
+    </Application>
   );
 }
 

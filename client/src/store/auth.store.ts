@@ -3,7 +3,7 @@ import {
   ILogin,
   IRegister
 } from "@interfaces/auth.interface";
-import { httpService } from "@services/http.service";
+import authService from "@services/auth.service";
 import { handleHttpError } from "@utils/errors/handle-http.error";
 import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
@@ -26,9 +26,9 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
   login: (loginData: ILogin) => {
     set({ isLoading: true, error: null });
 
-    httpService
-      .post("auth/login", loginData)
-      .then(({ data }) => {
+    authService
+      .login(loginData)
+      .then((data) => {
         const accessToken: string = data.accessToken;
 
         if (!accessToken) {
@@ -58,13 +58,26 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
   register: (registerData: IRegister) => {
     set({ isLoading: true, error: null });
 
-    httpService
-      .post("auth/register", registerData)
-      .then(({ data }) => {
+    authService
+      .register(registerData)
+      .then((data) => {
         console.log("data register", data);
       })
       .catch((error: unknown) => {
         handleHttpError(error, "Ошибка при попытке регистрации");
+        set({ error });
+      })
+      .finally(() => {
+        set({ isLoading: false });
+      });
+  },
+
+  logout: () => {
+    set({ isLoading: true, error: null });
+    authService
+      .logout()
+      .catch((error: unknown) => {
+        handleHttpError(error, "Ошибка при попытке выхода");
         set({ error });
       })
       .finally(() => {

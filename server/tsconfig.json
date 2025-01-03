@@ -29,7 +29,9 @@
       "@decorators": ["decorators"],
       "@decorators/*": ["decorators/*"],
       "@token": ["src/token"],
-      "@token/*": ["src/token/*"]
+      "@token/*": ["src/token/*"],
+      "@utils": ["src/utils"],
+      "@utils/*": ["src/utils/*"]
     }
   }
 }
