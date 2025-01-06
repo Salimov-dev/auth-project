@@ -16,7 +16,6 @@ const useTokenStore = create<IUseTokenStore>((set) => ({
 
   refreshTokens: async (error: AxiosError) => {
     set({ isLoading: true, error: null });
-
     try {
       const data = await tokenService.refreshTokens();
       const accessToken: string = data.accessToken;

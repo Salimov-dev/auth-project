@@ -5,7 +5,7 @@ import {
 } from "@interfaces/auth.interface";
 import authService from "@services/auth.service";
 import { handleHttpError } from "@utils/errors/handle-http.error";
-import { jwtDecode } from "jwt-decode";
+import { validateAndDecodeToken } from "@utils/token/validate-and-decode-token.util";
 import { create } from "zustand";
 
 interface IUseAuthStore {
@@ -13,8 +13,9 @@ interface IUseAuthStore {
   authUser: IAccessDecodedToken;
   isLoading: boolean;
   error: null | unknown;
-  login: (loginData: ILogin) => void;
+  login: (loginData: ILogin) => Promise<string | void>;
   register: (registerData: ILogin) => void;
+  logout: () => void;
 }
 
 const useAuthStore = create<IUseAuthStore>((set) => ({
@@ -26,7 +27,7 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
   login: (loginData: ILogin) => {
     set({ isLoading: true, error: null });
 
-    authService
+    return authService
       .login(loginData)
       .then((data) => {
         const accessToken: string = data.accessToken;
@@ -39,15 +40,18 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
 
         localStorage.setItem("token", accessToken);
 
-        const decodedToken: IAccessDecodedToken = jwtDecode(accessToken);
+        const decodedToken = validateAndDecodeToken(accessToken);
 
-        delete decodedToken.exp;
-        delete decodedToken.iat;
+        if (!decodedToken) {
+          throw new Error("Токены не найдены");
+        }
 
         set({ authUser: decodedToken });
+
+        return accessToken;
       })
       .catch((error: unknown) => {
-        handleHttpError(error, "Ошибка при попытке входа");
+        handleHttpError(error, "Ошибка при попытке входа", true);
         set({ error });
       })
       .finally(() => {
@@ -60,11 +64,14 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
 
     authService
       .register(registerData)
-      .then((data) => {
-        console.log("data register", data);
+      .then(() => {
+        useAuthStore.getState().login({
+          userName: registerData.userName,
+          password: registerData.password
+        });
       })
       .catch((error: unknown) => {
-        handleHttpError(error, "Ошибка при попытке регистрации");
+        handleHttpError(error, "Ошибка при попытке регистрации", true);
         set({ error });
       })
       .finally(() => {
@@ -76,6 +83,10 @@ const useAuthStore = create<IUseAuthStore>((set) => ({
     set({ isLoading: true, error: null });
     authService
       .logout()
+      .then(() => {
+        localStorage.removeItem("token");
+        set({ isAuth: false });
+      })
       .catch((error: unknown) => {
         handleHttpError(error, "Ошибка при попытке выхода");
         set({ error });

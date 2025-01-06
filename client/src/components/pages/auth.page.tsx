@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Modal, Segmented } from "antd";
 import LoginForm from "@forms/login/login.form";
 import RegisterForm from "@forms/register/register.form";
@@ -11,19 +11,17 @@ const options = [
 ];
 
 interface IProps {
-  segment: Segment;
   isModalOpen: boolean;
   cancelModal: () => void;
-  onChangeSegment: (value: Segment) => void;
 }
 
-const AuthPage: FC<IProps> = ({
-  segment,
-  isModalOpen,
-  cancelModal,
-  onChangeSegment
-}) => {
+const AuthPage: FC<IProps> = ({ isModalOpen, cancelModal }) => {
   const [form] = useForm();
+  const [segment, setSegment] = useState<Segment>("login");
+
+  const handleChangeSegment = (value: Segment) => {
+    setSegment(value);
+  };
 
   return (
     <Modal
@@ -36,12 +34,12 @@ const AuthPage: FC<IProps> = ({
       <Segmented
         options={options}
         block
-        onChange={(value) => onChangeSegment(value as Segment)}
+        onChange={(value) => handleChangeSegment(value as Segment)}
       />
       {segment === "login" ? (
-        <LoginForm form={form} />
+        <LoginForm form={form} onCancel={cancelModal} />
       ) : (
-        <RegisterForm form={form} />
+        <RegisterForm form={form} onCancel={cancelModal} />
       )}
     </Modal>
   );

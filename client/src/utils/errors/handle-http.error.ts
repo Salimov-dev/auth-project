@@ -1,9 +1,17 @@
 import { notification } from "antd";
 import { AxiosError } from "axios";
 
+/**
+ *
+ * @param error ошибка, может быть AxiosError | Error
+ * @param defaultMessage сообщение по умолчанию
+ * @param print boolean, отображать ли уведомление об ошибке
+ */
+
 export const handleHttpError = (
   error: unknown,
-  defaultMessage = "Неизвестная ошибка"
+  defaultMessage = "Неизвестная ошибка",
+  print = false
 ) => {
   let errorMessage = defaultMessage;
 
@@ -21,8 +29,10 @@ export const handleHttpError = (
     errorMessage = error.message;
   }
 
-  notification.error({
-    message: defaultMessage,
-    description: errorMessage
-  });
+  if (print) {
+    notification.error({
+      message: defaultMessage,
+      description: errorMessage
+    });
+  }
 };

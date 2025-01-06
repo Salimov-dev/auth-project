@@ -24,114 +24,112 @@ const useUserStore = create<IUseUserStore>((set) => ({
   isLoading: false,
   error: null,
 
-  fetchUsers: async () => {
+  fetchUsers: () => {
     set({ isLoading: true, error: null });
-    try {
-      const users = await userService.findAll();
-      set({ users });
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при загрузке списка пользователей");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .findAll()
+      .then((users) => set({ users }))
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при загрузке списка пользователей");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  fetchUserById: async (id: string) => {
+  fetchUserById: (id: string) => {
     set({ isLoading: true, error: null });
-    try {
-      const user = await userService.findById(id);
-      set({ selectedUser: user });
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при загрузке пользователя");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .findById(id)
+      .then((user) => set({ selectedUser: user }))
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при загрузке пользователя");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  fetchUserByUsername: async (username: string) => {
+  fetchUserByUsername: (username: string) => {
     set({ isLoading: true, error: null });
-    try {
-      const user = await userService.findByUsername(username);
-      set({ selectedUser: user });
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при поиске пользователя по имени");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .findByUsername(username)
+      .then((user) => set({ selectedUser: user }))
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при поиске пользователя по имени");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  fetchUserByEmail: async (email: string) => {
+  fetchUserByEmail: (email: string) => {
     set({ isLoading: true, error: null });
-    try {
-      const user = await userService.findByEmail(email);
-      set({ selectedUser: user });
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при поиске пользователя по email");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .findByEmail(email)
+      .then((user) => set({ selectedUser: user }))
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при поиске пользователя по email");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  fetchUserByPhone: async (phone: string) => {
+  fetchUserByPhone: (phone: string) => {
     set({ isLoading: true, error: null });
-    try {
-      const user = await userService.findByPhone(phone);
-      set({ selectedUser: user });
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при поиске пользователя по телефону");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .findByPhone(phone)
+      .then((user) => set({ selectedUser: user }))
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при поиске пользователя по телефону");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  createUser: async (user: Partial<IUser>) => {
+  createUser: (user: Partial<IUser>) => {
     set({ isLoading: true, error: null });
-    try {
-      const newUser = await userService.create(user);
-      set((state) => ({ users: [...state.users, newUser] }));
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при создании пользователя");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .create(user)
+      .then((newUser) => {
+        set((state) => ({ users: [...state.users, newUser] }));
+      })
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при создании пользователя");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  updateUser: async (id: string, user: Partial<IUser>) => {
+  updateUser: (id: string, user: Partial<IUser>) => {
     set({ isLoading: true, error: null });
-    try {
-      const updatedUser = await userService.update(id, user);
-      set((state) => ({
-        users: state.users.map((u) => (u.id === id ? updatedUser : u)),
-        selectedUser: updatedUser
-      }));
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при обновлении пользователя");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .update(id, user)
+      .then((updatedUser) => {
+        set((state) => ({
+          users: state.users.map((u) => (u.id === id ? updatedUser : u)),
+          selectedUser: updatedUser
+        }));
+      })
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при обновлении пользователя");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   },
 
-  deleteUser: async (id: string) => {
+  deleteUser: (id: string) => {
     set({ isLoading: true, error: null });
-    try {
-      await userService.remove(id);
-      set((state) => ({
-        users: state.users.filter((u) => u.id !== id),
-        selectedUser: null
-      }));
-    } catch (error: unknown) {
-      handleHttpError(error, "Ошибка при удалении пользователя");
-      set({ error });
-    } finally {
-      set({ isLoading: false });
-    }
+    userService
+      .remove(id)
+      .then(() => {
+        set((state) => ({
+          users: state.users.filter((u) => u.id !== id),
+          selectedUser: null
+        }));
+      })
+      .catch((error) => {
+        handleHttpError(error, "Ошибка при удалении пользователя");
+        set({ error });
+      })
+      .finally(() => set({ isLoading: false }));
   }
 }));
 

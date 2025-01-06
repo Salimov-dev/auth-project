@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Header from "@UI/header/header";
 import Content from "@UI/content/content";
 import Footer from "@UI/footer/footer";
-import useAuthStore from "@store/auth.store";
+import AppLoader from "./hoc/app-loader.hoc";
 
 const Application = styled(Layout)`
   width: 100%;
@@ -12,13 +12,13 @@ const Application = styled(Layout)`
 `;
 
 function App() {
-  console.log("useAuthStore", useAuthStore());
-
   return (
     <Application>
-      <Header />
-      <Content />
-      <Footer />
+      <AppLoader>
+        <Header />
+        <Content />
+        <Footer />
+      </AppLoader>
     </Application>
   );
 }

@@ -7,15 +7,17 @@ import useAuthStore from "@store/auth.store";
 
 interface IProps {
   form: FormInstance;
+  onCancel: () => void;
 }
 
-const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
+const RegisterForm: FC<IProps> = ({ form, onCancel }): JSX.Element => {
   const { register } = useAuthStore();
 
   const handleFinish: FormProps<IRegister>["onFinish"] = async (
     registerData
   ) => {
     register(registerData);
+    form.resetFields();
   };
 
   return (
@@ -43,7 +45,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="Password"
+        label="Пароль"
         name="password"
         rules={[
           { required: true, message: "Введите пароль!" },
@@ -62,7 +64,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="Repeat Password"
+        label="Повторите пароль"
         name="repeatPassword"
         rules={[
           { required: true, message: "Повторите введенный пароль!" },
@@ -93,7 +95,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="First Name"
+        label="Имя"
         name="firstName"
         rules={[
           { required: true, message: "Введите своё имя!" },
@@ -108,7 +110,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="Last Name"
+        label="Фамилия"
         name="lastName"
         rules={[
           { required: true, message: "Введите свою фамилию!" },
@@ -123,7 +125,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="Email"
+        label="Почта"
         name="email"
         rules={[
           { required: true, message: "Введите свою почту!" },
@@ -137,7 +139,7 @@ const RegisterForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<IRegister>
-        label="Phone"
+        label="Телефон"
         name="phone"
         rules={[
           { required: true, message: "Введите свой телефон!" },

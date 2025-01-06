@@ -15,7 +15,6 @@ import { Public } from './guards/jwt-auth.guard';
 import { Response } from 'express';
 import { TokenService } from '@token/token.service';
 import { Cookies } from '@decorators/cookies.decorator';
-import dayjs from 'dayjs';
 import { ConfigService } from '@nestjs/config';
 import { getCookieOptions } from '@utils/cookie-options.util';
 
@@ -70,7 +69,7 @@ export class AuthController {
     this.authService.deleteRefreshToken(refreshToken);
 
     const refreshTokenName = this.configService.get('REFRESH_TOKEN');
-    const today = dayjs().toDate();
+    const today = new Date();
 
     res.cookie(refreshTokenName, '', getCookieOptions(today));
     res.sendStatus(HttpStatus.OK);

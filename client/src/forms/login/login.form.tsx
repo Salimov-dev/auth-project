@@ -7,13 +7,19 @@ import useAuthStore from "@store/auth.store";
 
 interface IProps {
   form: FormInstance;
+  onCancel: () => void;
 }
 
-const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
+const LoginForm: FC<IProps> = ({ form, onCancel }): JSX.Element => {
   const { login } = useAuthStore();
 
   const handleFinish: FormProps<ILogin>["onFinish"] = (loginData) => {
-    login(loginData);
+    login(loginData).then((accessToken) => {
+      if (accessToken) {
+        onCancel();
+        form.resetFields();
+      }
+    });
   };
 
   return (
@@ -34,7 +40,7 @@ const LoginForm: FC<IProps> = ({ form }): JSX.Element => {
       </Form.Item>
 
       <Form.Item<ILogin>
-        label="Password"
+        label="Пароль"
         name="password"
         rules={[{ required: true, message: "Введите пароль!" }]}
       >
